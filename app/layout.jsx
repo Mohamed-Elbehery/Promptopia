@@ -1,3 +1,4 @@
+import { Header, Provider } from "@components";
 import "@styles/global.css";
 
 export const metadata = {
@@ -9,10 +10,15 @@ const RootLayout = ({ children }) => {
   return (
     <html lang="en">
       <body>
-        <div className="main">
-          <div className="gradient" />
-        </div>
-        <main className="app">{children}</main>
+        <Provider>
+          <div className="main">
+            <div className="gradient" />
+          </div>
+          <main className="app">
+            <Header />
+            {children}
+          </main>
+        </Provider>
       </body>
     </html>
   );
