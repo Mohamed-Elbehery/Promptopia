@@ -25,6 +25,7 @@ export const useUtils = () => {
         const filteredPosts = posts.filter((p) => p._id !== post._id);
 
         setPosts(filteredPosts);
+        router.push(`/profile/${post.creator._id}`);
       } catch (err) {
         console.error(err);
       }
