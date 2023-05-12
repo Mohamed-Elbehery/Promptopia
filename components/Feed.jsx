@@ -22,8 +22,10 @@ const PrompCardList = ({ data, handleTagClick }) => {
 const Feed = () => {
   const { posts } = usePosts();
   const [searchQuery, setSearchQuery] = useState("");
+  const [tagQuery, setTagQuery] = useState("");
   const [filteredPosts, setFilteredPosts] = useState([]);
 
+  // Search
   useEffect(() => {
     const filteredPosts = posts.filter((post) =>
       post.prompt.includes(searchQuery)
@@ -32,9 +34,22 @@ const Feed = () => {
     setFilteredPosts(filteredPosts);
   }, [searchQuery]);
 
+  // Tag
+  useEffect(() => {
+    const filteredPosts = posts.filter((post) =>
+      post.tag.includes(tagQuery.replace("#", ""))
+    );
+
+    setFilteredPosts(filteredPosts);
+  }, [tagQuery]);
+
   const handleSearchChange = (e) => {
     e.preventDefault();
     setSearchQuery(e.target.value);
+  };
+
+  const handleTagClick = (tag) => {
+    setTagQuery(() => tag);
   };
 
   return (
@@ -49,9 +64,24 @@ const Feed = () => {
           required
         />
       </form>
+      <span
+        className="cursor-pointer font-bold font-inter text-sm text-gray-500 hover:text-gray-400 mt-5 transition"
+        onClick={() => {
+          setTagQuery("");
+          setSearchQuery("");
+        }}
+      >
+        {tagQuery && "Reset"}
+      </span>
       <PrompCardList
-        data={searchQuery.length > 0 ? filteredPosts : posts}
-        handleTagClick={() => {}}
+        data={
+          tagQuery
+            ? filteredPosts
+            : searchQuery.length > 0
+            ? filteredPosts
+            : posts
+        }
+        handleTagClick={handleTagClick}
       />
     </section>
   );
