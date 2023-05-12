@@ -28,7 +28,7 @@ const Feed = () => {
   // Search
   useEffect(() => {
     const filteredPosts = posts.filter((post) =>
-      post.prompt.includes(searchQuery)
+      post.prompt.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     setFilteredPosts(filteredPosts);
@@ -37,17 +37,19 @@ const Feed = () => {
   // Tag
   useEffect(() => {
     const filteredPosts = posts.filter((post) =>
-      post.tag.includes(tagQuery.replace("#", ""))
+      post.tag.toLowerCase().includes(tagQuery.replace("#", "").toLowerCase())
     );
 
     setFilteredPosts(filteredPosts);
   }, [tagQuery]);
 
+  // Search Functionality
   const handleSearchChange = (e) => {
     e.preventDefault();
     setSearchQuery(e.target.value);
   };
 
+  // Tag Functionality
   const handleTagClick = (tag) => {
     setTagQuery(() => tag);
   };
