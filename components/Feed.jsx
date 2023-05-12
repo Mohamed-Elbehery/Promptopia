@@ -3,6 +3,7 @@
 // Custom Hook (usePosts)
 import { usePosts } from "@hooks/usePosts";
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import PromptCard from "./PromptCard";
 
 const PrompCardList = ({ data, handleTagClick }) => {
@@ -24,6 +25,7 @@ const Feed = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [tagQuery, setTagQuery] = useState("");
   const [filteredPosts, setFilteredPosts] = useState([]);
+  const { data: session } = useSession();
 
   // Search
   useEffect(() => {
@@ -75,16 +77,18 @@ const Feed = () => {
       >
         {tagQuery && "Reset"}
       </span>
-      <PrompCardList
-        data={
-          tagQuery
-            ? filteredPosts
-            : searchQuery.length > 0
-            ? filteredPosts
-            : posts
-        }
-        handleTagClick={handleTagClick}
-      />
+      {session?.user.id && (
+        <PrompCardList
+          data={
+            tagQuery
+              ? filteredPosts
+              : searchQuery.length > 0
+              ? filteredPosts
+              : posts
+          }
+          handleTagClick={handleTagClick}
+        />
+      )}
     </section>
   );
 };

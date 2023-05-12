@@ -15,21 +15,28 @@ const DynamicProfile = ({ params }) => {
   const router = useRouter();
 
   useEffect(() => {
+    if (!session?.user.id) router.push("/");
+  }, []);
+
+  useEffect(() => {
     if (params.id == session?.user.id) {
       router.push("/profile");
     }
+
     setPost(() => data.filter((p) => p.creator._id === params.id));
     console.log(post);
   }, [data]);
 
   return (
-    <Profile
-      name={post[0]?.creator.username}
-      desc={`Welcome to ${post[0]?.creator.username} personalized page`}
-      data={post}
-      handleEdit={handleEdit}
-      handleDelete={handleDelete}
-    />
+    session?.user.id && (
+      <Profile
+        name={post[0]?.creator.username}
+        desc={`Welcome to ${post[0]?.creator.username} personalized page`}
+        data={post}
+        handleEdit={handleEdit}
+        handleDelete={handleDelete}
+      />
+    )
   );
 };
 
