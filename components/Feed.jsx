@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+// Custom Hook (usePosts)
+import { usePosts } from "@hooks/usePosts";
+import { useEffect, useState } from "react";
 import PromptCard from "./PromptCard";
 
 const PrompCardList = ({ data, handleTagClick }) => {
@@ -18,36 +20,39 @@ const PrompCardList = ({ data, handleTagClick }) => {
 };
 
 const Feed = () => {
+  const { posts } = usePosts();
   const [searchQuery, setSearchQuery] = useState("");
-  const [posts, setPosts] = useState([]);
+  const [filteredPosts, setFilteredPosts] = useState([]);
+
+  useEffect(() => {
+    const filteredPosts = posts.filter((post) =>
+      post.prompt.includes(searchQuery)
+    );
+
+    setFilteredPosts(filteredPosts);
+  }, [searchQuery]);
 
   const handleSearchChange = (e) => {
     e.preventDefault();
+    setSearchQuery(e.target.value);
   };
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      const response = await fetch("/api/prompt");
-      const data = await response.json();
-      setPosts(() => data);
-    };
-
-    fetchPosts();
-  }, []);
 
   return (
     <section className="feed">
       <form className="relative w-full flex-center">
         <input
           type="text"
-          placeholder="Search for a tag or username"
           value={searchQuery}
-          onChange={handleSearchChange}
-          required
+          placeholder="Search for a tag or username"
+          onInput={handleSearchChange}
           className="search_input peer"
+          required
         />
       </form>
-      <PrompCardList data={posts} handleTagClick={() => {}} />
+      <PrompCardList
+        data={searchQuery.length > 0 ? filteredPosts : posts}
+        handleTagClick={() => {}}
+      />
     </section>
   );
 };
